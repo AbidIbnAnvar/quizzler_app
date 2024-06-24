@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'edit_questions.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +13,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        textTheme: TextTheme(bodyMedium: TextStyle(color: Colors.white)),
+        dialogTheme: DialogTheme(
+          backgroundColor:
+              Colors.grey[900], // Change the background color of the dialog
+          titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold), // Change the title text color
+          contentTextStyle: TextStyle(color: Colors.white),
+          // Change the content text color
+        ),
+      ),
       home: Scaffold(
         backgroundColor: Colors.grey[900],
         body: SafeArea(
@@ -79,15 +93,16 @@ class _QuizzlerState extends State<Quizzler> {
     question = getRandomKey(questionAnswers);
   }
 
+  List<String> questionsList = [];
   String getRandomKey(Map<String, bool> map) {
-    List<String> keys = map.keys.toList();
+    questionsList = map.keys.toList();
 
     // Generate a random index
     Random random = Random();
-    int randomIndex = random.nextInt(keys.length);
+    int randomIndex = random.nextInt(questionsList.length);
 
     // Return the key at the random index
-    return keys[randomIndex];
+    return questionsList[randomIndex];
   }
 
   @override
@@ -96,36 +111,25 @@ class _QuizzlerState extends State<Quizzler> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Correct: $correct',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                side: BorderSide(color: Colors.red),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-                foregroundColor: Colors.white,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Correct: $correct',
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
-              onPressed: () {
-                setState(() {
-                  correct = wrong = 0;
-                  scoreKeeper.clear();
-                });
-              },
-              child: Icon(
-                Icons.clear,
-                size: 24,
+              Text(
+                'Wrong: $wrong',
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
-            ),
-            Text(
-              'Wrong: $wrong',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
-          ],
+              Text(
+                'Score: ${(correct / (correct + wrong)).toStringAsFixed(2)}',
+                style: TextStyle(color: Colors.white, fontSize: 16),
+              ),
+            ],
+          ),
         ),
         Expanded(
           flex: 5,
@@ -137,6 +141,52 @@ class _QuizzlerState extends State<Quizzler> {
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  side: BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditQuestions(
+                                questionAnswers: questionAnswers,
+                              )));
+                },
+                child: Icon(
+                  Icons.edit,
+                  size: 20,
+                ),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  side: BorderSide(color: Colors.red),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  foregroundColor: Colors.redAccent,
+                ),
+                onPressed: () {
+                  setState(() {
+                    correct = wrong = 0;
+                    scoreKeeper.clear();
+                  });
+                },
+                child: Icon(
+                  CupertinoIcons.restart,
+                  size: 20,
+                ),
+              ),
+            ],
           ),
         ),
         Expanded(
