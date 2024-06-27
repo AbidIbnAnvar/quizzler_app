@@ -22,7 +22,7 @@ class _EditQuestionsState extends State<EditQuestions> {
     questions = widget.questionAnswers.keys.toList();
   }
 
-  void onPressed(BuildContext context, int index) {
+  void editDialog(BuildContext context, int index) {
     String question = questions[index];
     textEditingController.text = question;
     bool option = widget.questionAnswers[question] ?? false;
@@ -30,7 +30,7 @@ class _EditQuestionsState extends State<EditQuestions> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Editing'),
+          title: Text('Question'),
           content: StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) {
               return Column(
@@ -40,9 +40,10 @@ class _EditQuestionsState extends State<EditQuestions> {
                     padding: EdgeInsets.all(12),
                     autofocus: true,
                     decoration: BoxDecoration(
-                      color: Colors.black, // Background color
-                      borderRadius: BorderRadius.circular(10), // Border radius
-                    ),
+                        color: Colors.black, // Background color
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey) // Border radius
+                        ),
                     style: TextStyle(
                       color: Colors.white, // Font color
                       fontSize: 16,
@@ -147,9 +148,10 @@ class _EditQuestionsState extends State<EditQuestions> {
                     autofocus: true,
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.black, // Background color
-                      borderRadius: BorderRadius.circular(10), // Border radius
-                    ),
+                        color: Colors.black, // Background color
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey) // Border radius
+                        ),
                     controller: textInsertingController,
                     style: TextStyle(
                       color: Colors.white, // Font color
@@ -245,11 +247,13 @@ class _EditQuestionsState extends State<EditQuestions> {
         questionWidgets.add(Container(
           child: GestureDetector(
             onTap: () {
-              onPressed(context, i);
+              editDialog(context, i);
             },
             child: Container(
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10), color: Colors.black),
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black,
+                  border: Border.all(color: Colors.grey)),
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
@@ -289,12 +293,16 @@ class _EditQuestionsState extends State<EditQuestions> {
           style: TextStyle(color: Colors.white),
         ),
         actions: [
-          TextButton(
-            style: TextButton.styleFrom(foregroundColor: Colors.white),
-            onPressed: () {
-              addDialog();
-            },
-            child: Icon(Icons.add),
+          Container(
+            margin: EdgeInsets.only(right: 8),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                  foregroundColor: Colors.white, shape: CircleBorder()),
+              onPressed: () {
+                addDialog();
+              },
+              child: Icon(Icons.add),
+            ),
           ),
         ],
       ),
